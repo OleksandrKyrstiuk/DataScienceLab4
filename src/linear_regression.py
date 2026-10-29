@@ -21,7 +21,12 @@ def visualize_data(data: pd.DataFrame, x_column: str, y_column: str):
     """
     Visualizes the relationship between the feature and the target variable.
     """
-
+    plt.figure(figsize=(8, 5))
+    plt.scatter(data[x_column], data[y_column], color='blue', alpha=0.7)
+    plt.xlabel(x_column)
+    plt.ylabel(y_column)
+    plt.title(f'Relationship between {x_column} and {y_column}')
+    plt.grid(True)
     plt.show()
 
 
@@ -29,20 +34,24 @@ def linear_regression_with_metrics(data: pd.DataFrame, x_column: str, y_column: 
     """
     Performs linear regression, evaluates metrics, and visualizes the regression line.
     """
-    # Prepare the data
+    # Prepare the data (X має бути 2D-масивом/DataFrame, y — 1D)
+    X = data[[x_column]]
+    y = data[y_column]
 
-
-    # Split the data
-
+    # Split the data 
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Train the model
-
+    model = LinearRegression()
+    model.fit(X_train, y_train)
 
     # Make predictions
-
+    y_pred = model.predict(X_test)
 
     # Evaluate the model
-
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
 
     print(f"Model Evaluation Metrics:")
     print(f"Mean Absolute Error (MAE): {mae:.2f}")
@@ -50,18 +59,20 @@ def linear_regression_with_metrics(data: pd.DataFrame, x_column: str, y_column: 
     print(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
 
     # Visualize the regression line
+    plt.figure(figsize=(8, 5))
     plt.scatter(X_test, y_test, color='blue', label='Actual data')
     plt.plot(X_test, y_pred, color='red', linewidth=2, label='Regression line')
     plt.xlabel(x_column)
     plt.ylabel(y_column)
     plt.title('Linear Regression Fit')
     plt.legend()
+    plt.grid(True)
     plt.show()
 
 
 if __name__ == "__main__":
-    # Example usage
-    csv_path = "../data.csv"  # Path to the dataset
+
+    csv_path = "../data.csv"  
     data = read_csv(csv_path)
     print("Data Loaded Successfully!")
 
